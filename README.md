@@ -4,6 +4,7 @@ Kanban Board designed as part of my Web Application Assignment for my CS162-Soft
 # Simple Kanban-Board
 
 Simple implementation of a Kanban Board with three sections "To do", "Doing", and "Done" created in Flask. 
+
 <img width="943" alt="Rose's Kanban Board" src="https://user-images.githubusercontent.com/50888490/77203345-6b482c80-6aad-11ea-8964-ae8765ef9574.png">
 
 ## Features
@@ -20,7 +21,7 @@ Simple implementation of a Kanban Board with three sections "To do", "Doing", an
 Each user can have a Kanban board that is not accessible to other users.
 
 
-Clone the repository to your local machine or get the master branch to run the web application.
+##### Clone the repository to your local machine or get the master branch to run the web application.
 
 
 ## Windows
