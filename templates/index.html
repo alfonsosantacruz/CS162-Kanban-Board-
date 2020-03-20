@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- CSS styling -->
+  <style>
+  header {
+    background-color: #AED6F1;
+    padding: 5px;
+    text-align: center;
+    font-size: 35px;
+    color: #1A5276;
+    border: 1px solid black;
+  }
+
+
+  section {  background-color: #ECF0F1;
+    padding: 1px;
+    text-align: center;
+    color: black;
+  }
+
+  li {
+   list-style-type: none;
+   width: 250px;
+  }
+
+  input[type="text"]{
+    display: inline;
+    width: 309px;
+    height: 25px;
+    margin: 15px auto;
+    background-color: #AED6F1;
+    border: 0px;
+    padding: 5px;
+    font-size: 16px;
+    border: 2px solid black;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+  }
+
+  select{
+    display: inline;
+    width: 100px;
+    height: 35px;
+    margin: 15px auto;
+    background: #AED6F1;
+    border: 0px;
+    padding: 5px;
+    font-size: 16px;
+    border: 2px solid black;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+  }
+
+
+  input[type="submit"]{
+    cursor: pointer;
+  }
+
+  input[value="Go!"]{
+    display: block;
+    background: #A3E4D7;
+    width: 115px;
+    padding: 8px;
+    border: 2px solid black;
+    margin: auto;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    font-size: 20px;
+    transition: all 0.3s ease;
+  }
+
+
+  input[value="Logout"]{
+    display: inline;
+    background: #F9E79F;
+    width: 75px;
+    padding: 4px;
+    border: 2px solid black;
+    margin: auto;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+  } 
+
+  body {background-color: #ECF0F1;
+    padding: 10px;
+    text-align: center;
+    color: #1A5276;}
+
+  h2 {margin:5px;}
+  h6 {margin:5px;}
+  .container {width: 31.5%; float:left;clear: right;margin:10px; border-radius: 5px; border: 1px solid black;}
+  .sortable { list-style-type: none; margin:0; padding:1px; min-height:30px; border-radius: 5px;}
+  .sortable li { margin: 3px 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px;}
+  .sortable li span { position: absolute; margin-left: -1.3em; }
+  .card{background-color:#ECF0F1; border: 1px solid black; border-radius:5px;}
+  </style>
+
+  <title>Alfonso's Kanban Board</title>
+
+  <script src="https://kit.fontawesome.com/f587527fa1.js" crossorigin="anonymous"></script>
+
+ </head>
+
+ <header>
+   <!-- Show current user's name -->
+   {% if current_user.is_authenticated%}
+  <form method="POST" action="/logout" align="right">
+    <input type="submit" value="Logout">
+  </form>
+  <form align="left">
+    <a href="https://slack.com/signin" target="_blank"><i class="fab fa-slack" style="font-size:24px;"> </i></a>
+    <a href="https://calendar.google.com" target="_blank"><i class="far fa-calendar-alt" style="font-size:24px;"> </i></a>
+    <a href="https://mail.google.com" target="_blank"><i class="far fa-envelope" style="font-size:24px;"> </i></a>
+  </form>
+  <!--<h1 align="left">
+  <a href="https://slack.com/signin"><i class="fab fa-slack" style="font-size:24px;"> </i></a></h1>-->
+  <h2>{{ current_user.username }}'s Kanban Board</h2>
+  <h6>
+  <script type="text/javascript">
+        var myDate = new Date(); 
+        
+        document.write("Today is : " + myDate.toDateString()); 
+        document.write("<br/>"); 
+  </script>
+  </h6>
+  <p></p>
+  
+{% endif %}
+ </header>
+  <body>
+    <br></br>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
+
+<h2 align="center">Let's get this done! </h2>
+    <form method="POST" action="/main">
+      <input type="text" name="title" required>
+      <!-- <input type="date" name="deadline" required> -->
+      <!-- <input type="hidden" value="Evgeny" name="user_id"> -->
+      <select name="status">
+        <option> todo </option>
+        <option> doing </option>
+        <option> done </option>
+      </select>
+      <!-- <input type="text" name="status"> -->
+      <input class="btn btn-default" type="submit" value="Go!">
+    </form>
+    <p></p>
+
+  {% if error %}
+    <p class="error"><strong>Error:</strong> {{error}}
+  {% endif %}
+    <p></p>
+    <section>
+    <div>
+    <div class="container" style="background-color:#AED6F1;">
+    <h2 style="color:#1A5276">TO DO</h2>
+
+<!-- Update todo, doing, and done fields -->
+    <table>
+      {% for task in todo %}
+        <tr>
+          <td>
+            <ul class="sortable connectedSortable" >
+              <li class="card" class="card" width=31>  {{task.title}} </li>
+              <!--<li class="card" class="card" width=15>  {{task.deadline}}--> </li>
+            </ul>
+          </td>
+          <td>
+            <form method="POST" action="./update" style="display: inline">
+              <input type="hidden" value="{{task.title}}" name="name">
+              <input type="hidden" value="doing" name="newstatus">
+              <input type="submit" value="&#9989">
+              <!--<input type="image" value="&#10004">-->
+            </form>
+          </td>
+          <td>
+            <form method="POST" action="./delete" style="display: inline">
+              <input type="hidden" value="{{task.title}}" name="title">
+              <input type="submit" value="&#10060">
+
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+  </div>
+  
+  <div class="container" style="background-color:#AED6F1;">
+  <h2 style="color:#1A5276">DOING</h2>
+  
+  <table>
+    {% for task in doing %}
+      <tr>
+        <td>
+          <ul class="sortable connectedSortable" >
+            <li class="card" class="card" width=31>  {{task.title}}</li>
+          </ul>
+        </td>
+        <td>
+      
+          <form method="POST" action="./update" style="display: inline">
+            <input type="hidden" value="{{task.title}}" name="name">
+            <input type="hidden" value="todo" name="newstatus">
+            <input type="submit" value="&#128281">
+          </form>
+
+
+          <form method="POST" action="./update" style="display: inline">
+            <input type="hidden" value="{{task.title}}" name="name">
+            <input type="hidden" value="done" name="newstatus">
+            <input type="submit" value="&#9989">
+          </form>
+
+        </td>
+        <td>
+          <form method="POST" action="./delete" style="display: inline">
+            <input type="hidden" value="{{task.title}}" name="title">
+            <input type="submit" value="&#10060">
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+  </table>
+
+
+  </div>
+  <div class="container" style="background-color:#AED6F1;">
+  <h2 style="color:#1A5276">DONE</h2>
+  <table>
+    {% for task in done %}
+      <tr>
+        <td>
+          <ul class="sortable connectedSortable" >
+            <li class="card" class="card" width=31> {{task.title}}</li>
+          </ul>
+        </td>
+        <td>
+          <form method="POST" action="./update" style="display: inline">
+            <input type="hidden" value="{{task.title}}" name="name">
+            <input type="hidden" value="doing" name="newstatus">
+            <input type="submit" value="&#128281">
+          </form>
+        </td>
+        <td>
+          <form method="POST" action="./delete" style="display: inline">
+            <input type="hidden" value="{{task.title}}" name="title">
+            <input type="submit" value="&#127790">
+
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+  </div>
+  </div>
+  </section>
+  </body>
+</html>
