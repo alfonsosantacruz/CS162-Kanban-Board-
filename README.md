@@ -31,7 +31,7 @@ Each user can have a Kanban board that is not accessible to other users.
 Open your CMD and type the following commands being in the Kanban directory
 ```python
 python -m venv .venv
-source .venv/Sources/activate
+source .venv/Scripts/activate
 pip install -r requirements.txt
 ```
 
